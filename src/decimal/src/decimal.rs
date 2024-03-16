@@ -78,8 +78,13 @@ impl Decimal {
         let left = split[0];
         let right = split[1];
         let right_len = right.len();
+        let mut is_negative = false;
 
-        if left.len() <= self.left_count && right_len <= self.right_count {
+        if left.starts_with('-') {
+            is_negative = true;
+        }
+        
+        if (left.len() <= self.left_count || (is_negative && left.len() <= self.left_count + 1)) && right_len <= self.right_count {
             let ok_left_num = left.parse::<isize>();
             let ok_right_num = right.parse::<isize>();
 
@@ -88,8 +93,12 @@ impl Decimal {
                 let right_num = ok_right_num.unwrap();
                 let base: usize = 10;
                 let mutliplier = base.pow(self.right_count as u32) as isize;
-                let right_multiplier = base.pow((self.right_count - right_len) as u32) as isize;
+                let mut right_multiplier = base.pow((self.right_count - right_len) as u32) as isize;
                 
+                if is_negative {
+                    right_multiplier *= -1;
+                }
+
                 Result::Ok((left_num * mutliplier) + (right_num * right_multiplier))
             }else {
                 Result::Err(ParseError::NotValidNumerics)
@@ -105,4 +114,3 @@ impl Decimal {
         value * (multiplier as isize)
     }
 }
-

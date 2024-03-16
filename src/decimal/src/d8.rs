@@ -48,3 +48,24 @@ impl DecimalTrait<i8, LEFT_COUNT> for D8 {
         self.0 / (multiplier as i8)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn positive(){
+        let value = "0.9".to_owned();
+        let decimal = D8::from_string(value.clone()).unwrap();
+
+        assert_eq!(value, decimal.to_string())
+    }
+    
+    #[test]
+    fn negative(){
+        let value = "-0.9".to_owned();
+        let decimal = D8::from_string(value.clone()).unwrap();
+
+        assert_eq!(value, decimal.to_string())
+    }
+}
