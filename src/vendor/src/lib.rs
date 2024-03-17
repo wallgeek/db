@@ -4,7 +4,7 @@ use packet::Packet;
 use field::{ Field, Mode as FieldMode };
 use warehouse::{ Warehouse, Mode as WarehouseMode, Inventory, Token, SessionMode, SessionItem };
 use scalar::{Scalar, Integer};
-// use catalogue::Catalogue;
+use catalogue::Catalogue;
 use fumble::Fumble;
 
 type Pair = (String, Scalar);
@@ -14,7 +14,7 @@ pub struct Vendor {
     field: Field,
     warehouse: Warehouse<u32, Packet>,
     identifier: Inventory<u32, Token<u32>>,
-    // catalogue: Catalogue<u8, u32>
+    catalogue: Catalogue<u8, u32>
 }
 
 impl Vendor {
@@ -66,11 +66,11 @@ impl Vendor {
             field,
             warehouse,
             identifier: Inventory::new(),
-            // catalogue: Catalogue::new()
+            catalogue: Catalogue::new()
         };
 
         vendor.initialize();
-        
+        vendor.catalogue.setup(1);
         vendor
     }
 
@@ -88,6 +88,21 @@ impl Vendor {
         let o_token = self.identifier.take(id);
 
         if let Some(token) = o_token {
+            let packet = self.warehouse.get(&token).unwrap();
+            let total_fields = self.field.get_total();
+
+            for numeral in 0..total_fields {
+                if self.catalogue.has_index(numeral) {
+                    let o_scalar = packet.get(numeral);
+                    
+                    if let Some(scalar) = o_scalar {
+                        self.catalogue.remove(numeral, scalar.clone(), id);
+                    }
+                }
+
+                
+            }
+
             self.warehouse.remove(token);
 
             true
@@ -125,6 +140,17 @@ impl Vendor {
 
             if let Some(packet) = o_packet {
                 packets.push(packet)
+            }
+        }else if self.catalogue.has_index(numeral_condition) {
+            println!("Searching in catalogue");
+            let ids = self.catalogue.get(numeral_condition, scalar_condition.clone());
+
+            for id in ids {
+                let o_packet = self.get_by_id(id);
+
+                if let Some(packet) = o_packet {
+                    packets.push(packet)
+                }
             }
         }else {
             self.warehouse.start_session(SessionMode::Uninitialize);
@@ -187,7 +213,11 @@ impl Vendor {
 
             let numeral = self.field.add(&field);
             
-            packet.add(numeral, scalar);
+            packet.add(numeral, scalar.clone());
+
+            if self.catalogue.has_index(numeral) {
+                self.catalogue.add(numeral, scalar, id)
+            }
         }
         
         let add_result = self.warehouse.add(packet);
@@ -223,6 +253,11 @@ impl Vendor {
                         let numeral = self.field.add(&literal);
         
                         packet.add(numeral, pair.1.clone());
+
+                        if self.catalogue.has_index(numeral) {
+                            self.catalogue.remove(numeral, pair.1.clone(), id);
+                            self.catalogue.add(numeral, pair.1.clone(), id);
+                        }
                     }
                 }
                 

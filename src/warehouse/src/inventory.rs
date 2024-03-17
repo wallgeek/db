@@ -78,7 +78,6 @@ impl<Address: WholeNumber, Item> Inventory<Address, Item> {
     }
 
     pub fn take(&mut self, address: Address) -> Option<Item> {
-        self.estate.retain(address);
         let len = self.storage.len();
         let address_as_usize = address.to_usize();
 

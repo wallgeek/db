@@ -37,7 +37,7 @@ impl<Field: WholeNumber, Identifier: Eq + Clone + Copy> Catalogue<Field, Identif
 
     pub fn add(&mut self, field: Field, scalar: Scalar, meta: Identifier){
         let o_group = self.0.take(field);
-
+        
         if let Some(mut group) = o_group {
             self.0.reserve(Some(field));
             group.add(scalar, meta);
