@@ -10,7 +10,8 @@ pub enum Fumble {
     ScalarsCombinedSize,
     Operator,
     Start,
-    Action
+    Action,
+    Identifier
 }
 
 impl Fumble {
@@ -60,6 +61,10 @@ impl Fumble {
 
             Fumble::Action => {
                 result = "'match' should be followed by 'return', 'set' or 'delete'"
+            },
+
+            Fumble::Identifier => {
+                result = "Cannot set _id"
             }
         }
 

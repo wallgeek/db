@@ -180,6 +180,11 @@ impl Vendor {
         for pair in pairs {
             let field = pair.0;
             let scalar = pair.1;
+
+            if &field == ID_LITERAL {
+                return Err(Fumble::Identifier);
+            }
+
             let numeral = self.field.add(&field);
             
             packet.add(numeral, scalar);
@@ -210,7 +215,12 @@ impl Vendor {
             
                 if let Some(pairs) = o_set {
                     for pair in pairs {
-                        let numeral = self.field.add(&pair.0);
+                        let literal = &pair.0;
+
+                        if literal == ID_LITERAL {
+                            return Err(Fumble::Identifier);
+                        }
+                        let numeral = self.field.add(&literal);
         
                         packet.add(numeral, pair.1.clone());
                     }
