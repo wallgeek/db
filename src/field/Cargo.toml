@@ -8,7 +8,6 @@ edition = "2021"
 [dependencies]
 warehouse = { path = "../warehouse" }
 ds = { path = "../ds" }
-primitive = { path = "../primitive" }
 estate = { path = "../estate" }
 fumble = { path = "../fumble" }
 

@@ -9,6 +9,5 @@ edition = "2021"
 ds = { path = "../ds" }
 godown = { path = "../godown" }
 estate = { path = "../estate" }
-primitive = { path = "../primitive" }
 fumble = { path = "../fumble" }
 

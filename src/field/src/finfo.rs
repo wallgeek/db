@@ -1,4 +1,4 @@
-use primitive::Merchandise;
+use warehouse::Merchandise;
 type Good = Vec<u8>;
 
 #[derive(Clone)]

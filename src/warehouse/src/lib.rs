@@ -1,11 +1,12 @@
 
 mod inventory;
+mod merchandise;
 use estate::WholeNumber;
 use fumble::Fumble;
 use godown::{ Godown, Logistics, Address as GodownAddress, Item as LogisticsItem };
-use primitive::Merchandise;
 pub use godown::LogisticsMode as SessionMode;
 pub use inventory::Inventory;
+pub use merchandise::Merchandise;
 
 #[derive(PartialEq)]
 pub enum Mode {
